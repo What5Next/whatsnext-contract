@@ -1044,6 +1044,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "router"
+version = "0.1.0"
+dependencies = [
+ "near-sdk",
+]
+
+[[package]]
 name = "rustc-hex"
 version = "2.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1365,7 +1372,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "voteController"
+name = "voteFactory"
 version = "0.1.0"
 dependencies = [
  "near-contract-standards",
