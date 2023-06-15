@@ -20,4 +20,4 @@ panic = "abort"
 overflow-checks = true
 
 [workspace]
-members = ["voteFactory", "community", "platformtoken", "content", "contentFactory", "vote", "router"]
+members = ["voteFactory", "community", "platformtoken", "content", "contentFactory", "vote", "router", "voteV2"]

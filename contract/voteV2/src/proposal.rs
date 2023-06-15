@@ -68,5 +68,10 @@ impl ProposalData for Contract{
 mod proposal_tests {
     use super::*;
     use near_sdk::test_utils::VMContextBuilder;
+
+    fn init()-> VMContextBuilder {
+        
+        todo!();
+    }
     
 }
