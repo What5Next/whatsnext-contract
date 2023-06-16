@@ -51,7 +51,8 @@ impl Contract {
 
         // Changing Votes
         if let Some(_proposal) = self.proposals.get(&proposal_id.0){
-            self._vote(voter.clone(), proposal_id.0.clone(), amount.0.clone());
+            let result = self._vote(voter.clone(), proposal_id.0.clone(), amount.0.clone());
+            require!(result, "Faild to Votes");
         } else {
             assert!(true, "No persist proposal");
         }
@@ -64,5 +65,9 @@ impl Contract {
             let new_candidate =  self.compare_votes(current_candidate.clone(), proposal_id.0.clone());
             self.proposal_selected = new_candidate;
         }
+    }
+
+    pub fn get_currrent_candidate(&self) -> U64 {
+        self.proposal_selected.into()
     }
 }

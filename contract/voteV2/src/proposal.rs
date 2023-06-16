@@ -2,7 +2,7 @@ use near_sdk::serde::{Deserialize, Serialize};
 
 use crate::*;
 
-#[derive(BorshDeserialize, BorshSerialize, Clone, Deserialize, Serialize)]
+#[derive(BorshDeserialize, BorshSerialize, Clone, Deserialize, Serialize, Debug)]
 #[serde(crate = "near_sdk::serde")]
 pub struct Proposal {
     pub title: String,
@@ -67,11 +67,44 @@ impl ProposalData for Contract{
 #[cfg(test)]
 mod proposal_tests {
     use super::*;
-    use near_sdk::test_utils::VMContextBuilder;
+    use near_sdk::test_utils::{accounts, VMContextBuilder};
+    use near_sdk::{testing_env, VMContext};
 
-    fn init()-> VMContextBuilder {
+    fn get_context()-> VMContextBuilder {
+        let mut builder = VMContextBuilder::new();
+        builder
+            .signer_account_id("alice_near".parse().unwrap());
+        builder
+    }
+
+    #[test]
+    fn test_default(){
+        let mut context = get_context();
+        testing_env!(context.build());
+
+        let contract = Contract::default();
+        testing_env!(context.is_view(true).build());
+
+        assert_eq!(contract.get_currrent_candidate().0, 0);
+    }
+
+    #[test]
+    fn test_add_proposal(){
+        let mut context = get_context();
+        testing_env!(context.build());
+
+        let mut contract = Contract::default();
+        contract.add_proposal(Proposal { 
+            title: "test title".to_string(), 
+            writer: AccountId::try_from("alice_near".to_string()).unwrap(), 
+            keywords: "astronaut riding horse".to_string(), 
+            description: "progressive scene".to_string(), 
+        });
         
-        todo!();
+        testing_env!(context.is_view(true).build());
+        let proposal = contract.proposals.get(& 1).unwrap();
+
+        println!("New Proposal : {:?}", proposal);
     }
     
 }
