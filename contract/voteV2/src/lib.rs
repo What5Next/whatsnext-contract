@@ -5,11 +5,13 @@ use near_sdk::json_types::{U64, U128};
 
 pub mod proposal;
 pub mod internal;
+pub mod external;
 pub mod util;
 
 use crate::proposal::*;
 use crate::internal::*;
 use crate::util::*;
+use crate::external::*;
 
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize)]
@@ -69,5 +71,32 @@ impl Contract {
 
     pub fn get_currrent_candidate(&self) -> U64 {
         self.proposal_selected.into()
+    }
+
+    pub fn get_proposal_votes(&self, proposal_id: U64) -> U128 {
+        self.proposal_total_votes.get(&proposal_id.0).unwrap_or(0).into()
+    }
+
+    pub fn get_proposal_votes_with_account(
+        &self, 
+        account_id: AccountId, 
+        proposal_id: U64
+    ) -> U128 {
+        let all_votes_with_account = self.proposal_votes_with_accountId.get(&account_id)
+            .unwrap_or_else(|| panic!("Not exists account id in Data"));
+        all_votes_with_account.get(&proposal_id.0).unwrap_or(0).into()
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use near_sdk::test_utils::{accounts, VMContextBuilder};
+
+    fn get_context() -> VMContextBuilder {
+        let mut builder = VMContextBuilder::new();
+        builder.signer_account_id(accounts(1));
+        builder
     }
 }

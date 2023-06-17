@@ -12,25 +12,30 @@ pub struct Proposal {
 }
 
 pub trait ProposalData {
-    fn proposal( &self, proposal_id:U64 ) -> Proposal;
-    fn all_proposal(&self) -> Vec<(U64, Proposal)>;
+    fn get_proposal( &self, proposal_id:U64 ) -> Proposal;
+    fn get_all_proposals(&self) -> Vec<(U64, Proposal)>;
+    fn get_len_proposals(&self) -> U64;
     fn add_proposal(&mut self, proposal: Proposal) -> bool;
     fn remove_proposal(&mut self, proposal_id: U64) -> bool;
 }
 
 #[near_bindgen]
 impl ProposalData for Contract{
-    fn proposal(&self, proposal_id: U64) -> Proposal {
+    fn get_proposal(&self, proposal_id: U64) -> Proposal {
         self.proposals.get(&proposal_id.0).unwrap()
     }
 
-    fn all_proposal(&self) -> Vec<(U64, Proposal)> {
+    fn get_all_proposals(&self) -> Vec<(U64, Proposal)> {
         self.proposals
             .iter()
             .map(
                 |proposal| {(U64(proposal.0), proposal.1)}
             )
             .collect()
+    }
+
+    fn get_len_proposals(&self) -> U64 {
+        self.proposals.len().into()
     }
 
     fn add_proposal(&mut self, proposal: Proposal) -> bool {
