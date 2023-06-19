@@ -17,6 +17,6 @@ impl FungibleTokenReceiver for Contract {
 
         let proposal_id = msg.parse::<u64>().unwrap();
 
-        self._vote(sender_id, proposal_id, amount.0);
+        self.vote(proposal_id.into(), amount);
     }
 }

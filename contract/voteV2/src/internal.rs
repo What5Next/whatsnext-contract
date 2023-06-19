@@ -4,7 +4,7 @@ use crate::*;
 #[near_bindgen]
 impl Contract {
     #[private]
-    pub fn _vote(&mut self, voter: AccountId, proposal_id: u64, amount: Balance) -> bool {
+    pub fn internal_vote(&mut self, voter: AccountId, proposal_id: u64, amount: Balance) -> bool {
 
         // Adding Total Votes this contract
         self.total_votes += amount;
@@ -60,7 +60,7 @@ mod VoteTest {
         println!("Proposal in Voting Test: {:?}", proposal);
 
         testing_env!(context.is_view(false).build());
-        contract._vote(accounts(1), 1, 100);
+        contract.internal_vote(accounts(1), 1, 100);
 
         testing_env!(context.is_view(true).build());
         let proposal_votes = contract.get_proposal_votes(PROPOSAL_ID.into());

@@ -1,4 +1,4 @@
-use near_sdk::{near_bindgen, require, env, AccountId, Balance, BorshStorageKey};
+use near_sdk::{near_bindgen, require, env, AccountId, Balance, BorshStorageKey, Timestamp};
 use near_sdk::collections::{UnorderedMap, LookupMap};
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::json_types::{U64, U128};
@@ -13,6 +13,8 @@ use crate::internal::*;
 use crate::util::*;
 use crate::external::*;
 
+const VOTING_PERIOD: u64 = 100 * 3600 * 24 * 2;
+
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize)]
 pub struct Contract {
@@ -20,7 +22,10 @@ pub struct Contract {
     proposal_total_votes: UnorderedMap<u64, Balance>,
     proposal_votes_with_accountId: LookupMap< AccountId, UnorderedMap<u64, Balance> >,
     total_votes : Balance,
-    proposal_selected: u64,
+    proposal_selected : u64,
+    status : Status,
+    created_at : Timestamp, 
+
 }
 
 #[derive(BorshSerialize, BorshStorageKey)]
@@ -31,6 +36,12 @@ pub enum StorageKey {
     ProposalVotes(u64)
 }
 
+#[derive(BorshDeserialize, BorshSerialize)]
+pub enum Status{
+    Working,
+    Ended,
+}
+
 impl Default for Contract{
     fn default() -> Self{
         Self { 
@@ -39,21 +50,27 @@ impl Default for Contract{
             proposal_votes_with_accountId: LookupMap::new(StorageKey::ProposalVotesAccount), 
             total_votes: 0,
             proposal_selected: 0,
+            status: Status::Working,
+            created_at: env::block_timestamp_ms(),
         }
     }
 }
 
 #[near_bindgen]
 impl Contract {
+    #[private]
     pub fn vote(&mut self, proposal_id: U64, amount: U128) {
-        let voter = env::predecessor_account_id();
+        let voter = env::signer_account_id();
 
+        let current_time = env::block_timestamp_ms();
+        require!(current_time < self.get_end_date().0, "This vote is already finished.");
+        
         // Checking Platform Token with voter
         // todo
 
         // Changing Votes
         if let Some(_proposal) = self.proposals.get(&proposal_id.0){
-            let result = self._vote(voter.clone(), proposal_id.0.clone(), amount.0.clone());
+            let result = self.internal_vote(voter.clone(), proposal_id.0.clone(), amount.0.clone());
             require!(result, "Faild to Votes");
         } else {
             assert!(true, "No persist proposal");
@@ -69,7 +86,7 @@ impl Contract {
         }
     }
 
-    pub fn get_currrent_candidate(&self) -> U64 {
+    pub fn get_current_candidate(&self) -> U64 {
         self.proposal_selected.into()
     }
 
@@ -85,6 +102,10 @@ impl Contract {
         let all_votes_with_account = self.proposal_votes_with_accountId.get(&account_id)
             .unwrap_or_else(|| panic!("Not exists account id in Data"));
         all_votes_with_account.get(&proposal_id.0).unwrap_or(0).into()
+    }
+
+    pub fn get_end_date(&self) -> U64 {
+        ( self.created_at + VOTING_PERIOD ).into()
     }
 }
 

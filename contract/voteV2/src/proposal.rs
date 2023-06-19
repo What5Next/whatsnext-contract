@@ -90,7 +90,7 @@ mod proposal_tests {
         let contract = Contract::default();
         testing_env!(context.is_view(true).build());
 
-        assert_eq!(contract.get_currrent_candidate().0, 0);
+        assert_eq!(contract.get_current_candidate().0, 0);
     }
 
     #[test]
