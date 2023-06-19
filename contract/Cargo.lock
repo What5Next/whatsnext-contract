@@ -244,17 +244,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "content"
+name = "communityV2"
 version = "0.1.0"
 dependencies = [
- "near-contract-standards",
  "near-sdk",
- "serde",
- "serde_json",
 ]
 
 [[package]]
-name = "contentFactory"
+name = "content"
 version = "0.1.0"
 dependencies = [
  "near-contract-standards",
