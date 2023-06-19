@@ -5,13 +5,11 @@ use near_sdk::json_types::{U64, U128};
 
 pub mod proposal;
 pub mod internal;
-pub mod external;
 pub mod util;
 
 use crate::proposal::*;
 use crate::internal::*;
 use crate::util::*;
-use crate::external::*;
 
 const VOTING_PERIOD: u64 = 100 * 3600 * 24 * 2;
 
@@ -58,7 +56,6 @@ impl Default for Contract{
 
 #[near_bindgen]
 impl Contract {
-    #[private]
     pub fn vote(&mut self, proposal_id: U64, amount: U128) {
         let voter = env::signer_account_id();
 
