@@ -1,4 +1,4 @@
-use near_sdk::{near_bindgen, AccountId, Promise, Balance, env};
+use near_sdk::{near_bindgen, require, AccountId, Promise, Balance, env};
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::collections::{UnorderedMap, LazyOption};
 use near_sdk::json_types::{U64, U128};
@@ -54,6 +54,18 @@ impl Contract {
     }
 
     pub fn callback_create_vote(&mut self, vote_account_id: AccountId){
+        require!(env::predecessor_account_id() == env::current_account_id(), "This function should be called by this community");
+        
+        let length = self.votes.len();
+        self.votes.insert(&(length + 1), &vote_account_id);
         self.current_vote = Some(vote_account_id);
+    }
+
+    pub fn get_votes(&self) -> Vec<(u64, AccountId)>{
+        self.votes.to_vec()
+    }
+
+    pub fn get_current_vote(&self) -> AccountId {
+        self.current_vote.clone().unwrap()
     }
 }
