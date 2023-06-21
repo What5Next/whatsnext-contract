@@ -32,8 +32,12 @@
 
 # near call dev-1684621900690-81323020463953 new '{"community_account_id":"dev-1684588757249-57610888532698", "vote_controller_account_id":"empty.empty"}' --account_id test412ock.testnet
 
+near call dev-1684621900690-81323020463953 new '{"community_account_id":"dev-1684588757249-57610888532698", "vote_controller_account_id":"empty.empty"}' --account_id test412ock.testnet
+near call dev-1684630310415-65563881754902 new '{"community_account_id":"dev-1684588757249-57610888532698", "vote_controller_account_id":"empty.empty"}' --account_id test412ock.testnet
+near call dev-1684630362126-15394119341157 new '{"community_account_id":"dev-1684588757249-57610888532698", "vote_controller_account_id":"empty.empty"}' --account_id test412ock.testnet
+
 # near call dev-1684614979842-20949303805930 add_proposal '{"title":"hello","prompt":"near","description":"now"}' --account_id test412ock.testnet
 
-near view dev-1684621900690-81323020463953 get_votes_proposals
+# near view dev-1684621900690-81323020463953 get_votes_proposals
 
-near view dev-1684621900690-81323020463953 get_all_proposals
+# near view dev-1684621900690-81323020463953 get_all_proposals

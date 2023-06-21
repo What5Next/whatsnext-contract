@@ -24,6 +24,11 @@ impl Contract {
 
         true
     }
+
+    #[private]
+    pub fn internal_end(&mut self){
+        self.status = Status::Ended;
+    }
 }
 
 #[cfg(test)]

@@ -23,7 +23,6 @@ pub struct Contract {
     proposal_selected : u64,
     status : Status,
     created_at : Timestamp, 
-
 }
 
 #[derive(BorshSerialize, BorshStorageKey)]
@@ -81,6 +80,13 @@ impl Contract {
             let new_candidate =  self.compare_votes(current_candidate.clone(), proposal_id.0.clone());
             self.proposal_selected = new_candidate;
         }
+    }
+
+    pub fn end(&mut self){
+        let current_time = env::block_timestamp_ms();
+        require!(current_time > self.get_end_date().0, "This vote doesn't meet deadline");
+
+        self.internal_end();
     }
 
     pub fn get_current_candidate(&self) -> U64 {

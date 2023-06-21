@@ -4,6 +4,8 @@ use near_sdk::collections::{UnorderedMap, LazyOption};
 use near_sdk::json_types::{U64, U128};
 
 mod ext_vote;
+mod external;
+use crate::external::*;
 use crate::ext_vote::*;
 
 const INITIAL_BALANCE: Balance = 3_000_000_000_000_000_000_000_000 ;
@@ -68,4 +70,12 @@ impl Contract {
     pub fn get_current_vote(&self) -> AccountId {
         self.current_vote.clone().unwrap()
     }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use near_sdk::test_utils::VMContextBuilder;
+    use near_sdk::{testing_env};
+    
 }
